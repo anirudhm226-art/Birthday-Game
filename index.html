@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Birthday Catch Game - Pixel Art Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- Background Layers -->
+        <div id="bg-layer-1" class="bg-layer active" style="background-image: url('Assets/background/Christ.png');">
+        </div>
+        <div id="bg-layer-2" class="bg-layer"
+            style="background-image: url('Assets/background/Nexus%20Shantiniketan.png');"></div>
+        <div id="bg-layer-3" class="bg-layer" style="background-image: url('Assets/background/Dog%20Park.png');"></div>
+
+        <!-- ====== INTRO SCREEN ====== -->
+        <div id="intro-screen">
+            <div id="intro-content">
+                <h1 id="intro-title">Birthday Drop!</h1>
+                <p id="intro-subtitle">✨ A Special Game for a Special Girl ✨</p>
+                <div id="intro-buttons">
+                    <button id="btn-play" class="intro-btn">▶ PLAY</button>
+                    <button id="btn-howto" class="intro-btn">? HOW TO PLAY</button>
+                </div>
+                <!-- How To Play Panel (hidden by default) -->
+                <div id="howto-panel">
+                    <p id="howto-text">HEYYY Priyanshiii Welcome!!!<br><br>Use your arrow keys to move around and space
+                        bar to jump.<br><br>Collect all the things you like the most and avoid things you
+                        hate.<br><br>ENJOY!!</p>
+                    <button id="btn-howto-back" class="intro-btn">← BACK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pixel UI -->
+        <div id="ui" style="display:none;">
+            <div id="score">SCORE: 0</div>
+            <div id="lives">LIVES: ❤️❤️❤️</div>
+        </div>
+
+        <!-- Stylish Popups -->
+        <div id="popup-container"></div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Mobile Controls -->
+        <div id="mobile-controls" style="display:none;">
+            <button id="btn-left">◀</button>
+            <button id="btn-jump">JUMP</button>
+            <button id="btn-right">▶</button>
+        </div>
+
+        <!-- Finale Overlay -->
+        <div id="finale-overlay">
+            <h1 id="finale-text">HAPPY BIRTHDAY!</h1>
+            <video id="finale-video" controls playsinline>
+                <source src="Assets/Final%20Video/FinalMessage.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- Revive Screen -->
+        <div id="revive-screen" style="display:none;">
+            <div class="revive-content">
+                <div class="revive-dialog">
+                    <p id="revive-text"></p>
+                    <button id="btn-revive-next" class="intro-btn">CONTINUE</button>
+                </div>
+                <img src="Assets/Falling%20Assets/Cheesecake.png" id="revive-cheesecake" class="hidden">
+                <img src="Assets/Falling%20Assets/Anirudh.png" id="revive-anirudh">
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>

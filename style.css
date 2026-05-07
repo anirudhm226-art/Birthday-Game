@@ -1,0 +1,402 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Press Start 2P', cursive;
+    image-rendering: pixelated;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    z-index: 0;
+    image-rendering: pixelated;
+}
+
+.bg-layer.active {
+    opacity: 1;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    position: relative;
+    z-index: 5;
+}
+
+/* ============================
+   INTRO SCREEN
+   ============================ */
+#intro-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+#intro-screen.hidden {
+    display: none;
+}
+
+#intro-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px 30px;
+}
+
+#intro-title {
+    font-size: 36px;
+    color: #ffd166;
+    text-shadow: 4px 4px 0px #8b4513, -2px -2px 0px #d35400;
+    margin-bottom: 18px;
+    animation: titleBounce 2s ease-in-out infinite;
+}
+
+@keyframes titleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+#intro-subtitle {
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 2px 2px 0px #8b4513;
+    margin-bottom: 45px;
+    line-height: 1.8;
+}
+
+#intro-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.intro-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 20px 40px;
+    border: 4px solid #8b4513;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+    min-width: 280px;
+}
+
+/* Play button — warm gold */
+#btn-play {
+    background: linear-gradient(180deg, #ffd166 0%, #d49b2a 100%);
+    box-shadow: 0 6px 0px #8b4513, 0 8px 20px rgba(139, 69, 19, 0.4);
+    text-shadow: 2px 2px 0px #8b4513;
+    animation: btnPulse 1.5s ease-in-out infinite;
+}
+
+/* How to play button — warm orange */
+#btn-howto {
+    background: linear-gradient(180deg, #e67e22 0%, #d35400 100%);
+    box-shadow: 0 6px 0px #8b4513, 0 8px 20px rgba(139, 69, 19, 0.4);
+    text-shadow: 2px 2px 0px #6b2c00;
+    animation: btnPulse 1.5s ease-in-out infinite 0.3s;
+}
+
+#btn-howto-back {
+    background: linear-gradient(180deg, #e67e22 0%, #d35400 100%);
+    box-shadow: 0 6px 0px #8b4513, 0 8px 20px rgba(139, 69, 19, 0.4);
+    text-shadow: 2px 2px 0px #6b2c00;
+    margin-top: 30px;
+}
+
+@keyframes btnPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+.intro-btn:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 9px 0px #8b4513, 0 12px 30px rgba(139, 69, 19, 0.5) !important;
+}
+
+.intro-btn:active {
+    transform: translateY(4px) scale(0.98) !important;
+    box-shadow: 0 2px 0px #8b4513 !important;
+}
+
+/* Shimmer effect on buttons */
+.intro-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: skewX(-20deg);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -60%; }
+    50% { left: 120%; }
+    100% { left: 120%; }
+}
+
+/* How to play panel */
+#howto-panel {
+    display: none;
+}
+
+#howto-panel.visible {
+    display: block;
+}
+
+#howto-text {
+    font-size: 12px;
+    color: #ffd166;
+    text-shadow: 2px 2px 0px #8b4513;
+    line-height: 2.2;
+    text-align: left;
+    background: rgba(139, 69, 19, 0.35);
+    border: 3px solid #d49b2a;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+/* ============================
+   GAME UI
+   ============================ */
+#ui {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #d35400;
+    pointer-events: none;
+    z-index: 10;
+    
+    background: rgba(253, 245, 230, 0.9);
+    border: 4px solid #8b4513;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+#popup-container {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    z-index: 20;
+    width: 100%;
+}
+
+.popup-message {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #e67e22;
+    text-shadow: 3px 3px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff, 4px 4px 0px #8b4513;
+    animation: popupAnim 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+
+@keyframes popupAnim {
+    0% { opacity: 0; transform: scale(0.3) translateY(40px); }
+    15% { opacity: 1; transform: scale(1.1) translateY(0); }
+    25% { opacity: 1; transform: scale(1) translateY(0); }
+    80% { opacity: 1; transform: scale(1) translateY(0); }
+    100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+}
+
+.large-popup {
+    font-size: 32px !important;
+    animation: popupAnimLarge 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+}
+
+@keyframes popupAnimLarge {
+    0% { opacity: 0; transform: scale(0.3) translateY(40px); }
+    15% { opacity: 1; transform: scale(1.3) translateY(0); }
+    25% { opacity: 1; transform: scale(1.1) translateY(0); }
+    80% { opacity: 1; transform: scale(1.1) translateY(0); }
+    100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+}
+
+#mobile-controls {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 50;
+}
+
+#mobile-controls button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 20px 25px;
+    background: #e67e22;
+    border: 4px solid #8b4513;
+    color: #fff;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    touch-action: manipulation;
+    cursor: pointer;
+    box-shadow: 0 4px 0px #8b4513;
+    border-radius: 8px;
+}
+
+#mobile-controls button:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+@media (min-width: 768px) {
+    #mobile-controls { display: none !important; }
+}
+
+#finale-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(253, 245, 230, 0.95);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+#finale-text {
+    font-size: 32px;
+    color: #d35400;
+    margin-bottom: 30px;
+    text-shadow: 4px 4px 0px #f39c12;
+    animation: pulse 1s infinite alternate step-end;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#finale-video {
+    width: 90%;
+    max-width: 800px;
+    border: 8px solid #8b4513;
+    background: #000;
+}
+
+/* =========================================
+   REVIVE SCREEN STYLES
+   ========================================= */
+#revive-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.revive-content {
+    position: relative;
+    width: 320px;
+    height: 400px;
+}
+
+.revive-dialog {
+    position: absolute;
+    top: -40px;
+    left: 170px;
+    width: 230px;
+    background: #fdf5e6;
+    border: 4px solid #3d2314;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+    z-index: 60;
+}
+
+#revive-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3d2314;
+    margin-bottom: 20px;
+}
+
+#revive-anirudh {
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    width: 250px;
+    image-rendering: pixelated;
+    z-index: 55;
+}
+
+#revive-cheesecake {
+    position: absolute;
+    bottom: 90px;
+    left: 140px;
+    width: 80px;
+    image-rendering: pixelated;
+    z-index: 56;
+    animation: floatCake 2s ease-in-out infinite;
+}
+
+@keyframes floatCake {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
